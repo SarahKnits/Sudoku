@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A1C814419CA54D400956275 /* UIImage+ImageWithColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A1C814319CA54D400956275 /* UIImage+ImageWithColor.m */; };
 		0A8C220819C2470500483F92 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A8C220719C2470500483F92 /* Foundation.framework */; };
 		0A8C220A19C2470500483F92 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A8C220919C2470500483F92 /* CoreGraphics.framework */; };
 		0A8C220C19C2470500483F92 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A8C220B19C2470500483F92 /* UIKit.framework */; };
@@ -35,6 +36,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0A1C814219CA54D400956275 /* UIImage+ImageWithColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageWithColor.h"; sourceTree = "<group>"; };
+		0A1C814319CA54D400956275 /* UIImage+ImageWithColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageWithColor.m"; sourceTree = "<group>"; };
 		0A8C220419C2470500483F92 /* Sudoku.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sudoku.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A8C220719C2470500483F92 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0A8C220919C2470500483F92 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -122,6 +125,8 @@
 				0A8C221D19C2470500483F92 /* BGViewController.m */,
 				0A8C223C19C2482000483F92 /* BGGridView.h */,
 				0A8C223D19C2482000483F92 /* BGGridView.m */,
+				0A1C814219CA54D400956275 /* UIImage+ImageWithColor.h */,
+				0A1C814319CA54D400956275 /* UIImage+ImageWithColor.m */,
 				0A8C221F19C2470500483F92 /* Images.xcassets */,
 				0A8C220E19C2470500483F92 /* Supporting Files */,
 			);
@@ -255,6 +260,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A1C814419CA54D400956275 /* UIImage+ImageWithColor.m in Sources */,
 				0A8C221E19C2470500483F92 /* BGViewController.m in Sources */,
 				0A8C221419C2470500483F92 /* main.m in Sources */,
 				0A8C223E19C2482000483F92 /* BGGridView.m in Sources */,
