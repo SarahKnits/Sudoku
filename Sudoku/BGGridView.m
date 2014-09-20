@@ -26,7 +26,7 @@
     return self;
 }
 
-- (void)makeNewGridViewOfSize:(CGFloat)size withGrid:(int[9][9])initialGrid
+- (void)makeNewGridViewOfSize:(CGFloat)size
 {
     // Separation between cells in different blocks
     const CGFloat separation = 0.01*size;
@@ -50,11 +50,6 @@
             [button setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
             button.titleLabel.font = [UIFont boldSystemFontOfSize:[UIFont buttonFontSize]];
             
-            // Only show symbol if non-zero
-            if (initialGrid[i][j] != 0) {
-                [button setTitle:[NSString stringWithFormat:@"%i",initialGrid[i][j]] forState:UIControlStateNormal];
-            }
-            
             // Tag of 21 represents second row, first column
             [button setTag:((i+1)*10+(j+1))];
             [button addTarget:self action:@selector(buttonPressed:)forControlEvents:UIControlEventTouchUpInside];
@@ -75,6 +70,14 @@
 {
     if ([self.delegate respondsToSelector:@selector(buttonWasTapped:)]) {
         [self.delegate buttonWasTapped:sender];
+    }
+}
+
+- (void)setValue:(int)value AtRow:(int)row andCol:(int)col {
+    if (value != 0) {
+        [_buttonArray[row*9+col] setTitle:[NSString stringWithFormat:@"%i",value] forState:UIControlStateNormal];
+    } else {
+        [_buttonArray[row*9+col] setTitle:@"" forState:UIControlStateNormal];
     }
 }
 

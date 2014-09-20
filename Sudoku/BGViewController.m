@@ -8,32 +8,25 @@
 
 #import "BGViewController.h"
 #import "BGGridView.h"
+#import "BGGridModel.h"
+#import "BGNumPadView.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface BGViewController() <BGGridViewDelegate> {
     BGGridView* _gridView;
+    BGGridModel* _gridModel;
+    BGNumPadView* _numPadView;
 }
 
 @end
 
 @implementation BGViewController
 
-// Initial grid
-// Will eventually be replaced by grid generation
-int initialGrid[9][9] = {
-    {7,0,0,4,2,0,0,0,9},
-    {0,0,9,5,0,0,0,0,4},
-    {0,2,0,6,9,0,5,0,0},
-    {6,5,0,0,0,0,4,3,0},
-    {0,8,0,0,0,6,0,0,7},
-    {0,1,0,0,4,5,6,0,0},
-    {0,0,0,8,6,0,0,0,2},
-    {3,4,0,9,0,0,1,0,0},
-    {8,0,0,3,0,2,7,4,0}};
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    _gridModel = [[BGGridModel alloc] init];
     
     self.view.backgroundColor = [UIColor whiteColor];
     
@@ -50,8 +43,21 @@ int initialGrid[9][9] = {
     // Assign gridView's delegate to be the controller
     _gridView.delegate = self;
     // Populate the grid with the initial grid
-    [_gridView makeNewGridViewOfSize:size withGrid:initialGrid];
+    [_gridView makeNewGridViewOfSize:size];
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            [_gridView setValue:[_gridModel getValueAtRow:i andCol:j] AtRow:i andCol:j];
+        }
+    }
     [self.view addSubview:_gridView];
+    
+    CGRect numPadFrame = CGRectMake(x, 2*y + size, size, ((size*.96)/ 9) + 0.02*size); // Adjust as we figure this out
+    
+    // Create num Pad view
+    _numPadView = [[BGNumPadView alloc] initWithFrame:numPadFrame];
+    
+    [self.view addSubview:_numPadView];
+    
 }
 
 - (void)buttonWasTapped:(id)sender
