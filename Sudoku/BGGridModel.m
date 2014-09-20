@@ -39,6 +39,19 @@
     return self;
 }
 
+- (id) initForTests:(int[9][9]) initialGrid {
+    self = [super init];
+    if (self) {
+        for(int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                _grid[i][j] = initialGrid[i][j];
+                _canChange[i][j] = (_grid[i][j] == 0) ? YES : NO;
+            }
+        }
+    }
+    return self;
+}
+
 - (int) getValueAtRow:(int)row andCol:(int)col {
     return _grid[row][col];
 }
@@ -76,6 +89,9 @@
 }
 
 - (BOOL) checkGrid {
+    if (! [self isFull]) {
+        return NO;
+    }
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
             if (![self value:_grid[i][j] allowedAtRow:i andCol:j]) {

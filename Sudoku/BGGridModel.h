@@ -16,5 +16,6 @@
 - (BOOL) isFull;
 - (BOOL) checkGrid;
 - (BOOL) value:(int)value allowedAtRow:(int)row andCol:(int)col;
+- (id) initForTests:(int[9][9]) initialGrid;
 
 @end
