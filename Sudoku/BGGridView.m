@@ -73,9 +73,14 @@
     }
 }
 
-- (void)setValue:(int)value AtRow:(int)row andCol:(int)col {
+- (void)setValue:(int)value AtRow:(int)row andCol:(int)col andIsInitial:(BOOL)isInitial {
     if (value != 0) {
         [_buttonArray[row*9+col] setTitle:[NSString stringWithFormat:@"%i",value] forState:UIControlStateNormal];
+        if (isInitial) {
+            [_buttonArray[row*9+col] setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+        } else {
+            [_buttonArray[row*9+col] setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        }
     } else {
         [_buttonArray[row*9+col] setTitle:@"" forState:UIControlStateNormal];
     }

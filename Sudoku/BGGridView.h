@@ -17,7 +17,7 @@
 
 - (void)makeNewGridViewOfSize:(CGFloat)size;
 
-- (void)setValue:(int)value AtRow:(int)row andCol:(int)col;
+- (void)setValue:(int)value AtRow:(int)row andCol:(int)col andIsInitial:(BOOL)isInitial;
 
 @property (weak, nonatomic) id <BGGridViewDelegate> delegate;
 

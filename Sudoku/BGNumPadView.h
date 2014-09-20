@@ -1,5 +1,5 @@
 //
-//  BG.h
+//  BGNumPadView.h
 //  Sudoku
 //
 //  Created by Sarah Gilkinson on 9/20/14.
@@ -10,11 +10,13 @@
 
 @protocol BGNumPadViewDelegate <NSObject>
 @required
-- (void)buttonWasTapped:(id)sender;
+- (void)numberSelected:(id)sender;
 @end
 
 @interface BGNumPadView : UIView
 
 @property (weak, nonatomic) id <BGNumPadViewDelegate> delegate;
+
+- (int)getSelectedNumber;
 
 @end

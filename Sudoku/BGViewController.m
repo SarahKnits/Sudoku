@@ -12,7 +12,7 @@
 #import "BGNumPadView.h"
 #import <QuartzCore/QuartzCore.h>
 
-@interface BGViewController() <BGGridViewDelegate> {
+@interface BGViewController() <BGGridViewDelegate, BGNumPadViewDelegate> {
     BGGridView* _gridView;
     BGGridModel* _gridModel;
     BGNumPadView* _numPadView;
@@ -46,7 +46,7 @@
     [_gridView makeNewGridViewOfSize:size];
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
-            [_gridView setValue:[_gridModel getValueAtRow:i andCol:j] AtRow:i andCol:j];
+            [_gridView setValue:[_gridModel getValueAtRow:i andCol:j] AtRow:i andCol:j andIsInitial:YES];
         }
     }
     [self.view addSubview:_gridView];
@@ -55,6 +55,8 @@
     
     // Create num Pad view
     _numPadView = [[BGNumPadView alloc] initWithFrame:numPadFrame];
+    // Assign numPadView's delegate to be the controller
+    _numPadView.delegate = self;
     
     [self.view addSubview:_numPadView];
     
@@ -63,8 +65,23 @@
 - (void)buttonWasTapped:(id)sender
 {
     UIButton *curButton = (UIButton *) sender;
+    int selectedNumber = [_numPadView getSelectedNumber];
+    int row = (curButton.tag / 10) -1;
+    int col = (curButton.tag % 10) -1;
+    if ([_gridModel canChangeAtRow:row andCol:col]) {
+        [_gridView setValue:selectedNumber AtRow:row andCol:col andIsInitial:NO];
+        [_gridModel setValue:selectedNumber atRow:row andCol:col];
+    }
+    
     NSLog(@"You touched the button with row %i and column %i", (curButton.tag / 10), (curButton.tag % 10));
 }
+
+- (void)numberSelected:(UIButton*)sender
+{
+    UIButton *curButton = sender;
+    NSLog(@"You touched the button in position %i", curButton.tag);
+}
+
 
 - (void)didReceiveMemoryWarning
 {
