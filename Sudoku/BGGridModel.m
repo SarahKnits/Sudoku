@@ -51,4 +51,50 @@
     return _canChange[row][col];
 }
 
+- (BOOL) value:(int)value allowedAtRow:(int)row andCol:(int)col {
+    // Check row and column
+    for (int i=0; i<9; i++) {
+        if (i != row && _grid[i][col] == value) {
+            return NO;
+        }
+        if (i != col && _grid[row][i] == value) {
+            return NO;
+        }
+    }
+
+    // Check block
+    int blockRow = 3*(row/3), blockCol = 3*(col/3);
+    for (int i = blockRow; i < blockRow+3; i++) {
+        for (int j = blockCol; j < blockCol+3; j++) {
+            if ( !(i==row && j==col) && _grid[i][j] == value) {
+                return NO;
+            }
+        }
+    }
+    
+    return YES;
+}
+
+- (BOOL) checkGrid {
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            if (![self value:_grid[i][j] allowedAtRow:i andCol:j]) {
+                return NO;
+            }
+        }
+    }
+    return YES;
+}
+
+- (BOOL) isFull {
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            if (_grid[i][j] == 0) {
+                return NO;
+            }
+        }
+    }
+    return YES;
+}
+
 @end

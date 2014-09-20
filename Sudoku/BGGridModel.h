@@ -13,5 +13,8 @@
 - (int) getValueAtRow:(int)row andCol:(int)col;
 - (void) setValue:(int)value atRow:(int)row andCol:(int)col;
 - (BOOL) canChangeAtRow:(int)row andCol:(int)col;
+- (BOOL) isFull;
+- (BOOL) checkGrid;
+- (BOOL) value:(int)value allowedAtRow:(int)row andCol:(int)col;
 
 @end

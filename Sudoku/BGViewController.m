@@ -68,9 +68,26 @@
     int selectedNumber = [_numPadView getSelectedNumber];
     int row = (curButton.tag / 10) -1;
     int col = (curButton.tag % 10) -1;
-    if ([_gridModel canChangeAtRow:row andCol:col]) {
+    if ([_gridModel canChangeAtRow:row andCol:col] && [_gridModel value:selectedNumber allowedAtRow:row andCol:col]) {
         [_gridView setValue:selectedNumber AtRow:row andCol:col andIsInitial:NO];
         [_gridModel setValue:selectedNumber atRow:row andCol:col];
+    } else {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"You can't put that there!"
+                                                        message:@"You can't place that number there."
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+    }
+    if ([_gridModel isFull]) {
+        if ([_gridModel checkGrid]) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"You've won!"
+                                                            message:@"You are a winner."
+                                                           delegate:self
+                                                  cancelButtonTitle:@"Yay for me!"
+                                                  otherButtonTitles:nil];
+            [alert show];
+        }
     }
     
     NSLog(@"You touched the button with row %i and column %i", (curButton.tag / 10), (curButton.tag % 10));
