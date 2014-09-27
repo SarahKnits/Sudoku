@@ -37,7 +37,7 @@
         {0,0,0,8,6,0,0,0,2},
         {3,4,0,9,0,0,1,0,0},
         {8,0,0,3,0,2,7,4,0}};
-    BGGridModel *gridModel = [[BGGridModel alloc] initForTests:initialGrid];
+    BGGridModel *gridModel = [[BGGridModel alloc] initWithGrid:initialGrid];
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
             XCTAssertTrue([gridModel getValueAtRow:i andCol:j] == initialGrid[i][j], @"Didn't set values correctly");
@@ -61,7 +61,7 @@
         {0,0,0,8,6,0,0,0,2},
         {3,4,0,9,0,0,1,0,0},
         {8,0,0,3,0,2,7,4,0}};
-    BGGridModel *gridModel = [[BGGridModel alloc] initForTests:initialGrid];
+    BGGridModel *gridModel = [[BGGridModel alloc] initWithGrid:initialGrid];
     // Tests for failing columns
     XCTAssertFalse([gridModel value:2 allowedAtRow:1 andCol: 1]); // column test, middle should fail
     XCTAssertFalse([gridModel value:3 allowedAtRow:0 andCol: 7]); // column test, top should fail
@@ -87,7 +87,7 @@
         {0,0,0,8,6,0,0,0,2},
         {3,4,0,9,0,0,1,0,0},
         {8,0,0,3,0,2,7,4,0}};
-    BGGridModel *gridModel = [[BGGridModel alloc] initForTests:initialGrid];
+    BGGridModel *gridModel = [[BGGridModel alloc] initWithGrid:initialGrid];
     // Tests for failing columns
     XCTAssertFalse([gridModel value:6 allowedAtRow:4 andCol: 4]);
     XCTAssertFalse([gridModel value:2 allowedAtRow:8 andCol: 8]);
@@ -105,7 +105,7 @@
         {0,0,0,8,6,0,0,0,2},
         {3,4,0,9,0,0,1,0,0},
         {8,0,0,3,0,2,7,4,0}};
-    BGGridModel *gridModel = [[BGGridModel alloc] initForTests:initialGrid];
+    BGGridModel *gridModel = [[BGGridModel alloc] initWithGrid:initialGrid];
     XCTAssertTrue([gridModel value:5 allowedAtRow:8 andCol: 8]);
     XCTAssertTrue([gridModel value:1 allowedAtRow:1 andCol: 0]);
     XCTAssertTrue([gridModel value:1 allowedAtRow:4 andCol: 7]);
@@ -123,7 +123,7 @@
         {0,0,0,8,6,0,0,0,2},
         {3,4,0,9,0,0,1,0,0},
         {8,0,0,3,0,2,7,4,0}};
-    BGGridModel *gridModel = [[BGGridModel alloc] initForTests:initialGrid];
+    BGGridModel *gridModel = [[BGGridModel alloc] initWithGrid:initialGrid];
     
     const int numChanges = 10;
     int changes[numChanges][3] = {
@@ -160,7 +160,7 @@
         {3,4,5,6,7,8,9,1,2},
         {6,7,8,9,1,2,3,4,5},
         {9,1,2,3,4,5,6,7,8}};
-    BGGridModel *gridModel = [[BGGridModel alloc] initForTests:initialGrid];
+    BGGridModel *gridModel = [[BGGridModel alloc] initWithGrid:initialGrid];
     XCTAssertTrue([gridModel isFull], @"The grid should be full");
     XCTAssertTrue([gridModel checkGrid], @"The grid should be correct");
 }
@@ -176,7 +176,7 @@
         {3,4,5,6,7,8,9,1,2},
         {6,7,8,9,1,2,3,4,5},
         {9,1,2,3,4,5,6,7,8}};
-    BGGridModel *gridModel = [[BGGridModel alloc] initForTests:initialGrid];
+    BGGridModel *gridModel = [[BGGridModel alloc] initWithGrid:initialGrid];
     XCTAssertFalse([gridModel checkGrid], @"The grid should be correct");
 }
 
@@ -191,7 +191,7 @@
         {3,4,5,6,7,8,9,1,2},
         {6,7,8,9,1,2,3,4,5},
         {9,1,2,3,4,5,6,7,8}};
-    BGGridModel *gridModel = [[BGGridModel alloc] initForTests:initialGrid];
+    BGGridModel *gridModel = [[BGGridModel alloc] initWithGrid:initialGrid];
     XCTAssertFalse([gridModel isFull], @"The grid should not be full");
 }
 

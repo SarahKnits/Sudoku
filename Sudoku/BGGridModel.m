@@ -7,6 +7,7 @@
 //
 
 #import "BGGridModel.h"
+#include <stdlib.h>
 
 @interface BGGridModel() <NSObject> {
     int _grid[9][9];
@@ -39,7 +40,40 @@
     return self;
 }
 
-- (id) initForTests:(int[9][9]) initialGrid {
+- (id) initRandomFromFile:(NSString*) fileName
+{
+    self = [super init];
+    if (self) {
+        // Gets path for grid generation
+        NSString* path = [[NSBundle mainBundle] pathForResource:fileName ofType:@"txt"];
+        
+        NSError* error;
+        NSString* readString = [[NSString alloc] initWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
+        
+        NSMutableArray* array = (NSMutableArray *)[readString componentsSeparatedByCharactersInSet:
+            [NSCharacterSet characterSetWithCharactersInString:@" \n"]];
+        
+        // TODO: Figure out warning
+        NSUInteger r = arc4random_uniform([array count]);
+        
+        NSString* gridString = [array objectAtIndex:r];
+        
+        for(int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                NSString* curChar = [gridString substringWithRange:NSMakeRange(i*9+j,1)];
+                if ([curChar isEqual:@"."]) {
+                    _grid[i][j] = 0;
+                } else {
+                    _grid[i][j] = [curChar intValue];
+                }
+                _canChange[i][j] = (_grid[i][j] == 0) ? YES : NO;
+            }
+        }
+    }
+    return self;
+}
+
+- (id) initWithGrid:(int[9][9]) initialGrid {
     self = [super init];
     if (self) {
         for(int i = 0; i < 9; i++) {
@@ -111,6 +145,51 @@
         }
     }
     return YES;
+}
+
+- (void) saveGrid {
+    [[NSFileManager defaultManager] createFileAtPath:@"savedGrid.txt" contents:nil attributes:nil];
+    NSMutableString *gridState = @"";
+    NSMutableString *canChange = @"";
+    if (self) {
+        for(int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (_grid[i][j] != 0) {
+                  [gridState stringByAppendingString:[NSString stringWithFormat:@"%i",_grid[i][j]]];
+                } else {
+                   [gridState stringByAppendingString:@"."];
+                }
+                [canChange stringByAppendingString:_canChange[i][j] ? @"1" : @"0"];
+            }
+        }
+    }
+    
+    [[gridState stringByAppendingString:canChange] writeToFile:@"savedGrid.txt" atomically:YES encoding:NSUTF8StringEncoding error:nil];
+}
+
+- (id) restoreGrid {
+    NSString *gridString = [NSString stringWithContentsOfFile:@"savedGrid.txt" encoding:NSUTF8StringEncoding error: nil];
+    int currentCharacterIndex = 0;
+    for(int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            NSString* curChar = [gridString substringWithRange:NSMakeRange(currentCharacterIndex,1)];
+            currentCharacterIndex++;
+            if ([curChar isEqual:@"."]) {
+                _grid[i][j] = 0;
+            } else {
+                _grid[i][j] = [curChar intValue];
+            }
+            _canChange[i][j] = (_grid[i][j] == 0) ? YES : NO;
+        }
+    }
+    for(int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            NSString* curChar = [gridString substringWithRange:NSMakeRange(currentCharacterIndex,1)];
+            currentCharacterIndex++;
+            _canChange[i][j] = ([curChar isEqual:@"1"]) ? YES : NO;
+        }
+    }
+    return self;
 }
 
 @end

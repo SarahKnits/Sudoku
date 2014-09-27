@@ -11,11 +11,16 @@
 #import "BGGridModel.h"
 #import "BGNumPadView.h"
 #import <QuartzCore/QuartzCore.h>
+#import <Foundation/Foundation.h>
 
 @interface BGViewController() <BGGridViewDelegate, BGNumPadViewDelegate> {
     BGGridView* _gridView;
     BGGridModel* _gridModel;
     BGNumPadView* _numPadView;
+    UIActionSheet* _menu;
+    
+    BOOL _allowInvalidMove;
+    BOOL _doNotCheckValidIfFull;
 }
 
 @end
@@ -26,12 +31,12 @@
 {
     [super viewDidLoad];
     
-    _gridModel = [[BGGridModel alloc] init];
+    _gridModel = [[BGGridModel alloc] initRandomFromFile:@"grid1"];
     
     self.view.backgroundColor = [UIColor whiteColor];
     
     // Create grid frame
-    CGRect frame = self.view.frame;
+    CGRect frame = self.view.bounds;
     CGFloat x = CGRectGetWidth(frame)*.1;
     CGFloat y = CGRectGetHeight(frame)*.1;
     CGFloat size = MIN(CGRectGetWidth(frame), CGRectGetHeight(frame))*.80;
@@ -60,6 +65,30 @@
     
     [self.view addSubview:_numPadView];
     
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [button setTitle:@"Options Menu" forState:UIControlStateNormal];
+    [button sizeToFit];
+    button.center = CGPointMake(CGRectGetWidth(frame)*.9, CGRectGetHeight(frame)*.95);
+    [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    button.tintColor = [UIColor darkGrayColor];
+    [button addTarget:self action:@selector(showActionSheet:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:button];
+    
+    _allowInvalidMove = [[NSUserDefaults standardUserDefaults] boolForKey:@"_allowInvalidMove"];
+    _doNotCheckValidIfFull = [[NSUserDefaults standardUserDefaults] boolForKey:@"_doNotCheckValidIfFull"];
+    
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void) showActionSheet:(id)sender
+{
+    _menu = [[UIActionSheet alloc] initWithTitle:@"Options Menu" delegate:self cancelButtonTitle:@"Resume" destructiveButtonTitle:nil otherButtonTitles:
+             @"Quit Game",
+             @"How to play",
+             @"Reset Board",
+             @"Settings", nil];
+    _menu.tag = 1;
+    [_menu showInView:self.view];
 }
 
 - (void)buttonWasTapped:(id)sender
@@ -68,7 +97,9 @@
     int selectedNumber = [_numPadView getSelectedNumber];
     int row = (curButton.tag / 10) -1;
     int col = (curButton.tag % 10) -1;
-    if ([_gridModel canChangeAtRow:row andCol:col] && [_gridModel value:selectedNumber allowedAtRow:row andCol:col]) {
+    if ([_gridModel canChangeAtRow:row andCol:col]
+        && ([_gridModel value:selectedNumber allowedAtRow:row andCol:col]
+            || [[NSUserDefaults standardUserDefaults] boolForKey:@"_allowInvalidMove"])) {
         [_gridView setValue:selectedNumber AtRow:row andCol:col andIsInitial:NO];
         [_gridModel setValue:selectedNumber atRow:row andCol:col];
     } else {
@@ -79,7 +110,7 @@
                                               otherButtonTitles:nil];
         [alert show];
     }
-    if ([_gridModel isFull]) {
+    if ([_gridModel isFull] && ![[NSUserDefaults standardUserDefaults] boolForKey:@"_doNotCheckValidIfFull"]) {
         if ([_gridModel checkGrid]) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"You've won!"
                                                             message:@"You are a winner."
@@ -103,6 +134,54 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+- (void)actionSheet:(UIActionSheet*) actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch (buttonIndex) {
+        case 0:
+            [self returnToMenu];
+            break;
+        case 1:
+            [self showHowToPlay];
+            break;
+        case 2:
+            [self resetGrid];
+            break;
+        case 3:
+            [self settings];
+            break;
+        default:
+            break;
+    }
+}
+
+- (void) returnToMenu
+{
+    // This is to fix an issue with iOS, help from
+    // http://stackoverflow.com/questions/24854802/presenting-a-view-controller-modally-from-an-action-sheets-delegate-in-ios8
+    dispatch_async(dispatch_get_main_queue(), ^ {
+        [self performSegueWithIdentifier:@"returnToMenu" sender:self];
+    });
+}
+
+- (void) showHowToPlay
+{
+    // This is to fix an issue with iOS, help from
+    // http://stackoverflow.com/questions/24854802/presenting-a-view-controller-modally-from-an-action-sheets-delegate-in-ios8
+    dispatch_async(dispatch_get_main_queue(), ^ {
+        [self performSegueWithIdentifier:@"showHowToPlay" sender:self];
+    });
+}
+
+- (void) resetGrid
+{
+    // Do things here
+}
+
+- (void) settings
+{
+    // Do things here
 }
 
 @end

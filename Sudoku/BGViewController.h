@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BGViewController : UIViewController
+@interface BGViewController : UIViewController <UIActionSheetDelegate>
+
+- (void)actionSheet:(UIActionSheet*) actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
 
 @end
