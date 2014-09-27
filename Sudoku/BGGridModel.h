@@ -18,5 +18,7 @@
 - (BOOL) value:(int)value allowedAtRow:(int)row andCol:(int)col;
 - (id) initWithGrid:(int[9][9]) initialGrid;
 - (id) initRandomFromFile:(NSString*) fileName;
+- (void) saveGrid;
+- (id) restoreGrid;
 
 @end

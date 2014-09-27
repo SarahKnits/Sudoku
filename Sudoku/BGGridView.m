@@ -48,6 +48,9 @@
             
             button.backgroundColor = [UIColor whiteColor];
             [button setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+            button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+            button.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+            [button.titleLabel setTextAlignment:NSTextAlignmentCenter];
             button.titleLabel.font = [UIFont boldSystemFontOfSize:[UIFont buttonFontSize]];
             
             // Tag of 21 represents second row, first column
@@ -66,8 +69,14 @@
     }
 }
 
-- (IBAction)buttonPressed:(id)sender
+- (IBAction)buttonPressed:(UIButton*)sender
 {
+    CGRect previousFrame = sender.frame;
+    [self bringSubviewToFront:sender];
+    sender.frame = CGRectMake(previousFrame.origin.x - 50, previousFrame.origin.y -50, previousFrame.size.height + 100, previousFrame.size.width + 100);
+    [UIView animateWithDuration:0.75 animations:^ {
+        sender.frame = previousFrame;
+    }];
     if ([self.delegate respondsToSelector:@selector(buttonWasTapped:)]) {
         [self.delegate buttonWasTapped:sender];
     }

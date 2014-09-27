@@ -63,7 +63,7 @@
     if ([self.delegate respondsToSelector:@selector(numberSelected:)]) {
         [self.delegate numberSelected:sender];
     }
-    [self setSelectedNumber:((UIButton*) sender).tag];
+    [self setSelectedNumber:(int) ((UIButton*) sender).tag];
 }
 
 - (void)setSelectedNumber:(int)selection

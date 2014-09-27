@@ -12,4 +12,6 @@
 
 - (void)actionSheet:(UIActionSheet*) actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
 
+- (IBAction) exitFromSettings:(UIStoryboardSegue *) segue;
+
 @end

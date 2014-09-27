@@ -11,16 +11,12 @@
 #import "BGGridModel.h"
 #import "BGNumPadView.h"
 #import <QuartzCore/QuartzCore.h>
-#import <Foundation/Foundation.h>
 
 @interface BGViewController() <BGGridViewDelegate, BGNumPadViewDelegate> {
     BGGridView* _gridView;
     BGGridModel* _gridModel;
     BGNumPadView* _numPadView;
     UIActionSheet* _menu;
-    
-    BOOL _allowInvalidMove;
-    BOOL _doNotCheckValidIfFull;
 }
 
 @end
@@ -30,8 +26,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    _gridModel = [[BGGridModel alloc] initRandomFromFile:@"grid1"];
     
     self.view.backgroundColor = [UIColor whiteColor];
     
@@ -49,11 +43,7 @@
     _gridView.delegate = self;
     // Populate the grid with the initial grid
     [_gridView makeNewGridViewOfSize:size];
-    for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 9; j++) {
-            [_gridView setValue:[_gridModel getValueAtRow:i andCol:j] AtRow:i andCol:j andIsInitial:YES];
-        }
-    }
+    
     [self.view addSubview:_gridView];
     
     CGRect numPadFrame = CGRectMake(x, 2*y + size, size, ((size*.96)/ 9) + 0.02*size); // Adjust as we figure this out
@@ -73,11 +63,27 @@
     button.tintColor = [UIColor darkGrayColor];
     [button addTarget:self action:@selector(showActionSheet:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:button];
+}
+
+- (void) viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
     
-    _allowInvalidMove = [[NSUserDefaults standardUserDefaults] boolForKey:@"_allowInvalidMove"];
-    _doNotCheckValidIfFull = [[NSUserDefaults standardUserDefaults] boolForKey:@"_doNotCheckValidIfFull"];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"_restoreSavedGame"]) {
+        _gridModel = [[BGGridModel alloc] restoreGrid];
+    } else {
+        _gridModel = [[BGGridModel alloc] initRandomFromFile:@"grid1"];
+    }
     
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    if (animated) {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                [_gridView setValue:[_gridModel getValueAtRow:i andCol:j] AtRow:i andCol:j
+                       andIsInitial:![_gridModel canChangeAtRow:i andCol:j]];
+                // [NSThread sleepForTimeInterval:0.1];
+            }
+        }
+    }
 }
 
 - (void) showActionSheet:(id)sender
@@ -95,16 +101,23 @@
 {
     UIButton *curButton = (UIButton *) sender;
     int selectedNumber = [_numPadView getSelectedNumber];
-    int row = (curButton.tag / 10) -1;
-    int col = (curButton.tag % 10) -1;
+    int row = (int) (curButton.tag / 10) -1;
+    int col = (int) (curButton.tag % 10) -1;
     if ([_gridModel canChangeAtRow:row andCol:col]
         && ([_gridModel value:selectedNumber allowedAtRow:row andCol:col]
             || [[NSUserDefaults standardUserDefaults] boolForKey:@"_allowInvalidMove"])) {
         [_gridView setValue:selectedNumber AtRow:row andCol:col andIsInitial:NO];
         [_gridModel setValue:selectedNumber atRow:row andCol:col];
+    } else if (![_gridModel canChangeAtRow:row andCol:col]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"You can't put that there!"
+                                                        message:@"You can't replace initial values!"
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
     } else {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"You can't put that there!"
-                                                        message:@"You can't place that number there."
+                                                        message:@"That number is already in this row, column, or block."
                                                        delegate:self
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];
@@ -121,13 +134,13 @@
         }
     }
     
-    NSLog(@"You touched the button with row %i and column %i", (curButton.tag / 10), (curButton.tag % 10));
+    NSLog(@"You touched the button with row %ld and column %ld", (curButton.tag / 10), (curButton.tag % 10));
 }
 
 - (void)numberSelected:(UIButton*)sender
 {
     UIButton *curButton = sender;
-    NSLog(@"You touched the button in position %i", curButton.tag);
+    NSLog(@"You touched the button in position %ld", curButton.tag);
 }
 
 
@@ -161,6 +174,7 @@
     // This is to fix an issue with iOS, help from
     // http://stackoverflow.com/questions/24854802/presenting-a-view-controller-modally-from-an-action-sheets-delegate-in-ios8
     dispatch_async(dispatch_get_main_queue(), ^ {
+        [_gridModel saveGrid];
         [self performSegueWithIdentifier:@"returnToMenu" sender:self];
     });
 }
@@ -176,12 +190,29 @@
 
 - (void) resetGrid
 {
-    // Do things here
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            if ([_gridModel canChangeAtRow:i andCol:j]) {
+                [_gridModel setValue:0 atRow:i andCol:j];
+                [_gridView setValue:0 AtRow:i andCol:j andIsInitial:NO];
+            }
+        }
+    }
 }
 
 - (void) settings
 {
-    // Do things here
+    // This is to fix an issue with iOS, help from
+    // http://stackoverflow.com/questions/24854802/presenting-a-view-controller-modally-from-an-action-sheets-delegate-in-ios8
+    dispatch_async(dispatch_get_main_queue(), ^ {
+        [self performSegueWithIdentifier:@"gridToSettings" sender:self];
+    });
 }
+
+- (IBAction) exitFromSettings:(UIStoryboardSegue *) segue
+{
+    // Do nothing
+}
+
 
 @end

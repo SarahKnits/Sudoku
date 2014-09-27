@@ -149,26 +149,29 @@
 
 - (void) saveGrid {
     [[NSFileManager defaultManager] createFileAtPath:@"savedGrid.txt" contents:nil attributes:nil];
-    NSMutableString *gridState = @"";
-    NSMutableString *canChange = @"";
+    NSString *gridState = @"";
+    NSString *canChange = @"";
     if (self) {
         for(int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (_grid[i][j] != 0) {
-                  [gridState stringByAppendingString:[NSString stringWithFormat:@"%i",_grid[i][j]]];
+                  gridState = [gridState stringByAppendingString:[NSString stringWithFormat:@"%i",_grid[i][j]]];
                 } else {
-                   [gridState stringByAppendingString:@"."];
+                   gridState = [gridState stringByAppendingString:@"."];
                 }
-                [canChange stringByAppendingString:_canChange[i][j] ? @"1" : @"0"];
+                canChange = [canChange stringByAppendingString:_canChange[i][j] ? @"1" : @"0"];
             }
         }
     }
     
-    [[gridState stringByAppendingString:canChange] writeToFile:@"savedGrid.txt" atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    gridState = [gridState stringByAppendingString:canChange];
+    
+    [[NSUserDefaults standardUserDefaults] setObject:gridState forKey:@"_savedGrid"];
+    
 }
 
 - (id) restoreGrid {
-    NSString *gridString = [NSString stringWithContentsOfFile:@"savedGrid.txt" encoding:NSUTF8StringEncoding error: nil];
+    NSString* gridString = [[NSUserDefaults standardUserDefaults] objectForKey:@"_savedGrid"];
     int currentCharacterIndex = 0;
     for(int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
