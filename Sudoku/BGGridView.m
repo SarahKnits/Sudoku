@@ -55,7 +55,7 @@
             
             // Tag of 21 represents second row, first column
             [button setTag:((i+1)*10+(j+1))];
-            [button addTarget:self action:@selector(buttonPressed:)forControlEvents:UIControlEventTouchUpInside];
+            [button addTarget:self action:@selector(buttonPressed:)forControlEvents:UIControlEventTouchDown];
             
             // From stack overflow
             [button setBackgroundImage:[UIImage imageWithColor:[UIColor yellowColor]] forState:UIControlStateHighlighted];
@@ -73,8 +73,12 @@
 {
     CGRect previousFrame = sender.frame;
     [self bringSubviewToFront:sender];
-    sender.frame = CGRectMake(previousFrame.origin.x - 50, previousFrame.origin.y -50, previousFrame.size.height + 100, previousFrame.size.width + 100);
-    [UIView animateWithDuration:0.75 animations:^ {
+    int size = previousFrame.size.height;
+    double expand = 0.25;
+    int change = round(expand*size);
+    
+    sender.frame = CGRectMake(previousFrame.origin.x - 0.5 * change, previousFrame.origin.y - 0.5 * change, previousFrame.size.height + change, previousFrame.size.width + change);
+    [UIView animateWithDuration:0.1 animations:^ {
         sender.frame = previousFrame;
     }];
     if ([self.delegate respondsToSelector:@selector(buttonWasTapped:)]) {

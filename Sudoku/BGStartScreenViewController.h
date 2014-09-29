@@ -12,6 +12,7 @@
 
 - (IBAction)restoreSavedGame:(id)sender;
 - (IBAction)startNewGame:(id)sender;
+- (IBAction) exitFromSettings:(UIStoryboardSegue *) segue;
 
 
 @end

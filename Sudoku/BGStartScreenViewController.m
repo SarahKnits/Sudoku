@@ -83,4 +83,9 @@
     }
 }
 
+- (IBAction) exitFromSettings:(UIStoryboardSegue *) segue
+{
+    // Do nothing
+}
+
 @end

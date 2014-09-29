@@ -12,12 +12,8 @@
 
 + (NSMutableArray *) generateRandomFromFile:(NSString*) fileName
 {
-    NSLog(@"I'm here!");
     // Gets path for grid generation
     NSString* path = [[NSBundle mainBundle] pathForResource:fileName ofType:@"txt"];
-    
-    NSLog(@"Path: ");
-    NSLog(path);
     
     NSError* error;
     NSString* readString = [[NSString alloc] initWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];

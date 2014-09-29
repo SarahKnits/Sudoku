@@ -17,6 +17,7 @@
 - (BOOL) checkGrid;
 - (BOOL) value:(int)value allowedAtRow:(int)row andCol:(int)col;
 - (id) initWithGrid:(NSArray *) initialGrid;
+- (id) initWithIntGrid:(int[9][9]) initialGrid;
 - (void) saveGrid;
 - (instancetype) restoreGrid;
 
