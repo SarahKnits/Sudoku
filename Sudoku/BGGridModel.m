@@ -17,68 +17,12 @@
 
 @implementation BGGridModel
 
-- (id) init {
-    self = [super init];
-    if (self) {
-        int initialGrid[9][9] = {
-            {7,0,0,4,2,0,0,0,9},
-            {0,0,9,5,0,0,0,0,4},
-            {0,2,0,6,9,0,5,0,0},
-            {6,5,0,0,0,0,4,3,0},
-            {0,8,0,0,0,6,0,0,7},
-            {0,1,0,0,4,5,6,0,0},
-            {0,0,0,8,6,0,0,0,2},
-            {3,4,0,9,0,0,1,0,0},
-            {8,0,0,3,0,2,7,4,0}};
-        for(int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                _grid[i][j] = initialGrid[i][j];
-                _canChange[i][j] = (_grid[i][j] == 0) ? YES : NO;
-            }
-        }
-    }
-    return self;
-}
-
-- (id) initRandomFromFile:(NSString*) fileName
-{
-    self = [super init];
-    if (self) {
-        // Gets path for grid generation
-        NSString* path = [[NSBundle mainBundle] pathForResource:fileName ofType:@"txt"];
-        
-        NSError* error;
-        NSString* readString = [[NSString alloc] initWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
-        
-        NSMutableArray* array = (NSMutableArray *)[readString componentsSeparatedByCharactersInSet:
-            [NSCharacterSet characterSetWithCharactersInString:@" \n"]];
-        
-        // TODO: Figure out warning
-        NSUInteger r = arc4random_uniform([array count]);
-        
-        NSString* gridString = [array objectAtIndex:r];
-        
-        for(int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                NSString* curChar = [gridString substringWithRange:NSMakeRange(i*9+j,1)];
-                if ([curChar isEqual:@"."]) {
-                    _grid[i][j] = 0;
-                } else {
-                    _grid[i][j] = [curChar intValue];
-                }
-                _canChange[i][j] = (_grid[i][j] == 0) ? YES : NO;
-            }
-        }
-    }
-    return self;
-}
-
-- (id) initWithGrid:(int[9][9]) initialGrid {
+- (id) initWithGrid:(NSArray *) initialGrid {
     self = [super init];
     if (self) {
         for(int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                _grid[i][j] = initialGrid[i][j];
+                _grid[i][j] = [initialGrid[i][j] intValue];
                 _canChange[i][j] = (_grid[i][j] == 0) ? YES : NO;
             }
         }
@@ -155,7 +99,7 @@
         for(int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (_grid[i][j] != 0) {
-                  gridState = [gridState stringByAppendingString:[NSString stringWithFormat:@"%i",_grid[i][j]]];
+                    gridState = [gridState stringByAppendingString:[NSString stringWithFormat:@"%i",_grid[i][j]]];
                 } else {
                    gridState = [gridState stringByAppendingString:@"."];
                 }
@@ -170,7 +114,7 @@
     
 }
 
-- (id) restoreGrid {
+- (instancetype) restoreGrid {
     NSString* gridString = [[NSUserDefaults standardUserDefaults] objectForKey:@"_savedGrid"];
     int currentCharacterIndex = 0;
     for(int i = 0; i < 9; i++) {

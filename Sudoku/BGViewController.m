@@ -10,6 +10,7 @@
 #import "BGGridView.h"
 #import "BGGridModel.h"
 #import "BGNumPadView.h"
+#import "BGGridGenerator.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface BGViewController() <BGGridViewDelegate, BGNumPadViewDelegate> {
@@ -71,8 +72,10 @@
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"_restoreSavedGame"]) {
         _gridModel = [[BGGridModel alloc] restoreGrid];
+        NSLog(@"Restore");
     } else {
-        _gridModel = [[BGGridModel alloc] initRandomFromFile:@"grid1"];
+        NSLog(@"Create");
+        _gridModel = [[BGGridModel alloc] initWithGrid:[BGGridGenerator generateRandomFromFile:@"grid1"]];
     }
     
     if (animated) {
@@ -104,6 +107,7 @@
     int row = (int) (curButton.tag / 10) -1;
     int col = (int) (curButton.tag % 10) -1;
     if ([_gridModel canChangeAtRow:row andCol:col]
+        
         && ([_gridModel value:selectedNumber allowedAtRow:row andCol:col]
             || [[NSUserDefaults standardUserDefaults] boolForKey:@"_allowInvalidMove"])) {
         [_gridView setValue:selectedNumber AtRow:row andCol:col andIsInitial:NO];

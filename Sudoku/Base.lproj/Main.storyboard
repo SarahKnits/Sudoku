@@ -102,18 +102,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MT7-cG-AeE">
-                                <rect key="frame" x="435" y="262" width="51" height="31"/>
-                                <connections>
-                                    <action selector="changeDoNotCheckValidIfFull:" destination="hmc-jA-jZ7" eventType="valueChanged" id="b86-MA-1Y4"/>
-                                </connections>
-                            </switch>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7jP-sv-fqh">
-                                <rect key="frame" x="435" y="319" width="51" height="31"/>
-                                <connections>
-                                    <action selector="changeAllowInvalidMove:" destination="hmc-jA-jZ7" eventType="valueChanged" id="FfW-hB-GkX"/>
-                                </connections>
-                            </switch>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Tell me when I win" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="IjZ-c1-A7J">
                                 <rect key="frame" x="243" y="263" width="145" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>

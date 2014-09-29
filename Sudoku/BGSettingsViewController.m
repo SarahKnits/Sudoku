@@ -8,7 +8,12 @@
 
 #import "BGSettingsViewController.h"
 
-@interface BGSettingsViewController ()
+@interface BGSettingsViewController () {
+
+    UISwitch * _allowInvalidMoveSwitch;
+    UISwitch * _doNotCheckValidIfFullSwitch;
+}
+
 
 @end
 
@@ -16,7 +21,24 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    _allowInvalidMoveSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(435, 319, 51, 31)];
+    _doNotCheckValidIfFullSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(435, 262, 51, 31)];
+    
+    [self.view addSubview:_allowInvalidMoveSwitch];
+    [self.view addSubview:_doNotCheckValidIfFullSwitch];
+    
+    [_allowInvalidMoveSwitch setOn:[[NSUserDefaults standardUserDefaults]
+                                    boolForKey:@"_allowInvalidMove"]];
+    [_doNotCheckValidIfFullSwitch setOn:[[NSUserDefaults standardUserDefaults]
+                                         boolForKey:@"_doNotCheckValidIfFull"]];
+    
+    [_allowInvalidMoveSwitch addTarget:self action:@selector(changeAllowInvalidMove:)
+                      forControlEvents:UIControlEventValueChanged];
+    [_doNotCheckValidIfFullSwitch addTarget:self action:@selector(changeDoNotCheckValidIfFull:)
+                           forControlEvents:UIControlEventValueChanged];
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -29,14 +51,12 @@
 {
     [[NSUserDefaults standardUserDefaults] setBool:[sender isOn] forKey:@"_allowInvalidMove"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    NSLog(@"Setting is: %d", [[NSUserDefaults standardUserDefaults] boolForKey:@"_allowInvalidMove"]);
 }
 
 - (IBAction) changeDoNotCheckValidIfFull:(UISwitch *)sender
 {
    [[NSUserDefaults standardUserDefaults] setBool:[sender isOn] forKey:@"_doNotCheckValidIfFull"];
    [[NSUserDefaults standardUserDefaults] synchronize];
-    NSLog(@"Setting is: %d", [[NSUserDefaults standardUserDefaults] boolForKey:@"_doNotCheckValidIfFull"]);
 }
 
 
