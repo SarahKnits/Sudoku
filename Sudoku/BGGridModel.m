@@ -7,7 +7,6 @@
 //
 
 #import "BGGridModel.h"
-#include <stdlib.h>
 
 @interface BGGridModel() <NSObject> {
     int _grid[9][9];
@@ -56,6 +55,9 @@
 }
 
 - (BOOL) value:(int)value allowedAtRow:(int)row andCol:(int)col {
+    if (value == 0) {
+        return YES;
+    }
     // Check row and column
     for (int i=0; i<9; i++) {
         if (i != row && _grid[i][col] == value) {

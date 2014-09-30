@@ -37,6 +37,7 @@
                       forControlEvents:UIControlEventValueChanged];
     [_doNotCheckValidIfFullSwitch addTarget:self action:@selector(changeDoNotCheckValidIfFull:)
                            forControlEvents:UIControlEventValueChanged];
+    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"ios-fabric-1680-800x500.png"]];
     
     
 }

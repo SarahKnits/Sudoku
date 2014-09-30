@@ -8,6 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import "BGGridModel.h"
+#import "BGGridGenerator.h"
 
 @interface SudokuTests : XCTestCase
 
@@ -180,6 +181,21 @@
     XCTAssertFalse([gridModel checkGrid], @"The grid should be correct");
 }
 
+- (void) testCorrectGridValidationWhenNotFull {
+    int initialGrid[9][9] = {
+        {1,2,3,4,5,6,7,8,0},
+        {4,5,6,7,8,9,1,2,3},
+        {7,8,9,1,2,3,4,0,6},
+        {2,3,4,5,6,7,8,9,1},
+        {5,6,7,8,9,1,2,3,4},
+        {8,9,1,2,3,4,5,6,7},
+        {3,4,5,6,7,8,9,1,2},
+        {6,7,8,9,1,2,3,4,5},
+        {9,1,2,3,4,5,6,7,8}};
+    BGGridModel *gridModel = [[BGGridModel alloc] initWithIntGrid:initialGrid];
+    XCTAssertFalse([gridModel checkGrid], @"The un-full grid should not be correct");
+}
+
 - (void) testGridFullWhenNotFull {
     int initialGrid[9][9] = {
         {1,2,3,4,5,6,7,8,0},
@@ -194,6 +210,41 @@
     BGGridModel *gridModel = [[BGGridModel alloc] initWithIntGrid:initialGrid];
     XCTAssertFalse([gridModel isFull], @"The grid should not be full");
 }
+
+- (void) testGenerateRandomFromFile {
+    int initialGrid[9][9] = {
+        {0,6,4,0,8,0,0,0,0},
+        {7,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,4,0,0,0},
+        {0,0,5,0,0,1,8,0,0},
+        {9,2,0,4,0,0,3,0,0},
+        {0,0,1,0,0,0,0,5,0},
+        {0,0,0,8,0,0,0,4,6},
+        {0,0,0,0,3,2,0,1,0},
+        {0,0,0,6,4,5,7,0,0}};
+    BGGridModel *gridModel = [[BGGridModel alloc] initWithGrid:[BGGridGenerator generateRandomFromFile:@"testGridFile"]];
+    [self checkModel:gridModel againstArray:initialGrid];
+}
+
+- (void)testGridSaveAndRestore {
+    int initialGrid[9][9] = {
+        {7,0,0,4,2,0,0,0,9},
+        {0,0,9,5,0,0,0,0,4},
+        {0,2,0,6,9,0,5,0,0},
+        {6,5,0,0,0,0,4,3,0},
+        {0,8,0,0,0,6,0,0,7},
+        {0,1,0,0,4,5,6,0,0},
+        {0,0,0,8,6,0,0,0,2},
+        {3,4,0,9,0,0,1,0,0},
+        {8,0,0,3,0,2,7,4,0}};
+    BGGridModel *gridModel = [[BGGridModel alloc] initWithIntGrid:initialGrid];
+    [gridModel saveGrid];
+    [gridModel setValue:3 atRow:0 andCol:1];
+    [gridModel restoreGrid];
+    [self checkModel:gridModel againstArray:initialGrid];
+}
+
+
 
 - (void) checkModel:(BGGridModel*)model againstArray: (int[9][9]) array {
     for (int i = 0; i < 9; i++) {

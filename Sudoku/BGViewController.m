@@ -13,7 +13,7 @@
 #import "BGGridGenerator.h"
 #import <QuartzCore/QuartzCore.h>
 
-@interface BGViewController() <BGGridViewDelegate, BGNumPadViewDelegate> {
+@interface BGViewController() <BGGridViewDelegate> {
     BGGridView* _gridView;
     BGGridModel* _gridModel;
     BGNumPadView* _numPadView;
@@ -28,7 +28,7 @@
 {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"ios-fabric-1680-800x500.png"]];
     
     // Create grid frame
     CGRect frame = self.view.bounds;
@@ -52,7 +52,7 @@
     // Create num Pad view
     _numPadView = [[BGNumPadView alloc] initWithFrame:numPadFrame];
     // Assign numPadView's delegate to be the controller
-    _numPadView.delegate = self;
+    //_numPadView.delegate = self;
     
     [self.view addSubview:_numPadView];
     
@@ -60,7 +60,7 @@
     [button setTitle:@"Options Menu" forState:UIControlStateNormal];
     [button sizeToFit];
     button.center = CGPointMake(CGRectGetWidth(frame)*.9, CGRectGetHeight(frame)*.95);
-    [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     button.tintColor = [UIColor darkGrayColor];
     [button addTarget:self action:@selector(showActionSheet:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:button];
@@ -70,12 +70,15 @@
 {
     [super viewDidAppear:animated];
     
+    
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"_restoreSavedGame"]) {
         _gridModel = [[BGGridModel alloc] restoreGrid];
-        NSLog(@"Restore");
     } else {
-        NSLog(@"Create");
-        _gridModel = [[BGGridModel alloc] initWithGrid:[BGGridGenerator generateRandomFromFile:@"grid1"]];
+        if (arc4random_uniform(2) > 0) { // 50-50 chance of one setup or the other
+            _gridModel = [[BGGridModel alloc] initWithGrid:[BGGridGenerator generateRandomFromFile:@"grid1"]];
+        } else {
+            _gridModel = [[BGGridModel alloc] initWithGrid:[BGGridGenerator generateRandomFromFile:@"grid2"]];
+        }
     }
     
     if (animated) {
@@ -137,16 +140,7 @@
             [alert show];
         }
     }
-    
-    NSLog(@"You touched the button with row %ld and column %ld", (curButton.tag / 10), (curButton.tag % 10));
 }
-
-- (void)numberSelected:(UIButton*)sender
-{
-    UIButton *curButton = sender;
-    NSLog(@"You touched the button in position %ld", curButton.tag);
-}
-
 
 - (void)didReceiveMemoryWarning
 {
