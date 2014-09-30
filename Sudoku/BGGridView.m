@@ -26,7 +26,7 @@
     return self;
 }
 
-- (void)makeNewGridViewOfSize:(CGFloat)size withGrid:(int[9][9])initialGrid
+- (void)makeNewGridViewOfSize:(CGFloat)size
 {
     // Separation between cells in different blocks
     const CGFloat separation = 0.01*size;
@@ -48,16 +48,14 @@
             
             button.backgroundColor = [UIColor whiteColor];
             [button setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+            button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+            button.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+            [button.titleLabel setTextAlignment:NSTextAlignmentCenter];
             button.titleLabel.font = [UIFont boldSystemFontOfSize:[UIFont buttonFontSize]];
-            
-            // Only show symbol if non-zero
-            if (initialGrid[i][j] != 0) {
-                [button setTitle:[NSString stringWithFormat:@"%i",initialGrid[i][j]] forState:UIControlStateNormal];
-            }
             
             // Tag of 21 represents second row, first column
             [button setTag:((i+1)*10+(j+1))];
-            [button addTarget:self action:@selector(buttonPressed:)forControlEvents:UIControlEventTouchUpInside];
+            [button addTarget:self action:@selector(buttonPressed:)forControlEvents:UIControlEventTouchDown];
             
             // From stack overflow
             [button setBackgroundImage:[UIImage imageWithColor:[UIColor yellowColor]] forState:UIControlStateHighlighted];
@@ -71,10 +69,33 @@
     }
 }
 
-- (IBAction)buttonPressed:(id)sender
+- (IBAction)buttonPressed:(UIButton*)sender
 {
+    CGRect previousFrame = sender.frame;
+    [self bringSubviewToFront:sender];
+    int size = previousFrame.size.height;
+    double expand = 0.25;
+    int change = round(expand*size);
+    
+    sender.frame = CGRectMake(previousFrame.origin.x - 0.5 * change, previousFrame.origin.y - 0.5 * change, previousFrame.size.height + change, previousFrame.size.width + change);
+    [UIView animateWithDuration:0.1 animations:^ {
+        sender.frame = previousFrame;
+    }];
     if ([self.delegate respondsToSelector:@selector(buttonWasTapped:)]) {
         [self.delegate buttonWasTapped:sender];
+    }
+}
+
+- (void)setValue:(int)value AtRow:(int)row andCol:(int)col andIsInitial:(BOOL)isInitial {
+    if (value != 0) {
+        [_buttonArray[row*9+col] setTitle:[NSString stringWithFormat:@"%i",value] forState:UIControlStateNormal];
+        if (isInitial) {
+            [_buttonArray[row*9+col] setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+        } else {
+            [_buttonArray[row*9+col] setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        }
+    } else {
+        [_buttonArray[row*9+col] setTitle:@"" forState:UIControlStateNormal];
     }
 }
 

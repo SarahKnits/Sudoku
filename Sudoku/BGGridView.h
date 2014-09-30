@@ -15,7 +15,9 @@
 
 @interface BGGridView : UIView
 
-- (void)makeNewGridViewOfSize:(CGFloat)size withGrid:(int[9][9])initialGrid;
+- (void)makeNewGridViewOfSize:(CGFloat)size;
+
+- (void)setValue:(int)value AtRow:(int)row andCol:(int)col andIsInitial:(BOOL)isInitial;
 
 @property (weak, nonatomic) id <BGGridViewDelegate> delegate;
 
